@@ -6,20 +6,28 @@ const port = 3000;
 
 app.use('/js', express.static(path.join(__dirname, 'js')))
 app.use('/scans', express.static(path.join(__dirname, 'scans')))
+app.use('/templates', express.static(path.join(__dirname, 'templates')))
 
-app.get('/api/getNameOfImages', function (req, res) {
+function readDir(pathToFolder, res){
     let nameOfFiles = []
-    fs.readdir(path.join(__dirname, 'scans'), function (err, files) {
+    fs.readdir(path.join(__dirname, pathToFolder), function (err, files) {
         if (err) {
             return console.log("files scan error");
         }
-        console.log("ekssd");
         files.forEach(function (file) {
             nameOfFiles.push({ name: file });
         });
         res.contentType('application/json');
         res.send(JSON.stringify(nameOfFiles));
     });
+}
+
+app.get('/api/getNameOfImages', function (req, res) {
+   readDir('scans',res);
+});
+
+app.get('/api/getNameOfTemplates', function (req, res) {
+    readDir('templates', res);
 });
 
 app.get('', function (req, res) {
